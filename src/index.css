@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Courier New', Courier, monospace;
+  background-color: white;
+  color: black;
+  overflow-x: hidden;
+  touch-action: pan-y;
+}
+
+canvas {
+  display: block;
+}
