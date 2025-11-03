@@ -96,8 +96,10 @@ const Clock1 = ({ onBlackProgressChange, onTouchingChange }) => {
       // and shrinks down to 0 (at touch point) as blackProgress goes from 0 to 1
       const currentRadius = maxDistToCorner * (1 - blackProgress);
 
-      // Create pixelated/grainy effect - process in larger blocks for performance
-      const pixelSize = 3; // Size of each "grain"
+      // Create pixelated/grainy effect - use larger chunks on bigger screens for better performance
+      // Mobile (~400px wide): 3px chunks = ~18K pixels
+      // Desktop (~1920px wide): 8px chunks = ~57K pixels (much better performance)
+      const pixelSize = Math.max(3, Math.floor(width / 240)); // Scales with screen width
       
       for (let y = 0; y < height; y += pixelSize) {
         for (let x = 0; x < width; x += pixelSize) {
@@ -123,11 +125,12 @@ const Clock1 = ({ onBlackProgressChange, onTouchingChange }) => {
           const distFromBoundary = distToTouch - currentRadius;
           if (distFromBoundary > -80 && distFromBoundary < 80 && blackProgress > 0.01) {
             const aberrationStrength = (1 - Math.abs(distFromBoundary) / 80);
-            if (Math.random() > 0.6) {
+            const rand = Math.random();
+            if (rand > 0.7) {
               // Red edge - appears on both sides of boundary
               ctx.fillStyle = `rgba(255, 0, 0, ${aberrationStrength * 0.4})`;
               ctx.fillRect(x, y, pixelSize, pixelSize);
-            } else if (Math.random() > 0.3) {
+            } else if (rand > 0.4) {
               // Cyan edge - appears on both sides of boundary
               ctx.fillStyle = `rgba(0, 255, 255, ${aberrationStrength * 0.3})`;
               ctx.fillRect(x, y, pixelSize, pixelSize);
